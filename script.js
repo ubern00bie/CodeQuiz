@@ -80,7 +80,7 @@ function beginQuiz() {
 //function to show questions
 var lastQuestion = questions.length;
 function showQuestion() {
-  if(questionIndex === lastQuestion) {
+  if(questionIndex === lastQuestion) { //this may not be necessary - see if you can fix error
   } 
   else {
   questionBox.innerHTML = questions[questionIndex].question;
@@ -138,7 +138,7 @@ function endQuiz() {
     event.preventDefault();
     var initials = document.getElementById('userIni').value;
     userIni.style.display = "none";
-    localStorage.setItem("userIni", initials + " : " + correct +"/"+ questions.length)
+    localStorage.setItem("userIni", initials + " : " + correct +"/"+ questions.length +" correct")
     prevScore() 
     submitBtn.style.display = "none";
     restartBtn.style.display = "block";
