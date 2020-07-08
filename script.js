@@ -4,7 +4,8 @@ var timeEl = document.querySelector(".time"); //link to time text in html
 var buttons = document.getElementById("buttons");//link to section in html to contain generated buttons
 var startBtn = document.getElementById("startBtn");//link to start button from html
 var correct = 0;
-var questionIndex = 0; //setting the index of my questions to start at 0 (the first object in the array)
+var restartBtn = document.createElement('button');
+// var questionIndex = 0; //setting the index of my questions to start at 0 (the first object in the array)
 var answerIndex = 0; //setting the index of my answer to start at 0 (the first line within the array)
 startBtn.addEventListener("click", beginQuiz);
 //function used to advance to next question
@@ -39,7 +40,7 @@ let questions = [
     ]
   },
   {
-    question: 'Is web development fun?',
+    question: 'Is JavaScript fun?',
     answers: [
       { text: 'No', correct: false },
       { text: 'Duh', correct: true },
@@ -59,28 +60,32 @@ let questions = [
 ];
 //function to control timer  
 var secondsLeft = 40;
+var timeInterval
 function setTime() {
-  var timerInterval = setInterval(function() {
+  timerInterval = setInterval(function() {
   timeEl.textContent = secondsLeft + " seconds left.";
-  secondsLeft--;    
-  if(secondsLeft === 0) {
+  secondsLeft--;  console.log("1" +(( + secondsLeft === 0 || secondsLeft < 0) && questionIndex > 0))  
+  if((secondsLeft === 0 || secondsLeft < 0) && questionIndex > 0) {
     clearInterval(timerInterval);
-    timeEl.textContent = "Quiz has ended!";  
+    timeEl.textContent = "Quiz has ended!"; 
+    endQuiz(); 
+    buttons.innerHTML = "";
   }
   }, 1000);
 }  
 //function to begin quiz 
 function beginQuiz() {
+  questionIndex = 0;
   startBtn.style.display = "none";  
   questionBox.style.display = "block";
-  setTime()
+  setTime();
   genButton();
   showQuestion();
 }
 //function to show questions
 var lastQuestion = questions.length;
 function showQuestion() {
-  if(questionIndex === lastQuestion) { //this may not be necessary - see if you can fix error
+  if(questionIndex === lastQuestion) { clearInterval(timerInterval);
   } 
   else {
   questionBox.innerHTML = questions[questionIndex].question;
@@ -91,11 +96,14 @@ function showQuestion() {
 }
 //function to generate buttons containing answers from object within array of questions
 function genButton() {
-  if(questionIndex === questions.length){
-    endQuiz();}
+ console.log(questionIndex === questions.length)
+  if((questionIndex === questions.length)){
+    endQuiz()
+}
   else {
     for(i = 0; i < questions[questionIndex].answers.length; i++){
       var button = document.createElement('button');
+      button.style.border = "solid black";
       button.dataset.correct = questions[questionIndex].answers[i].correct;
       button.innerText = questions[questionIndex].answers[i].text;
       button.classList.add('btn');
@@ -120,7 +128,6 @@ function userAnswer(event) {
 }
 //function to end quiz and allow user to submit score
 function endQuiz() {
-  secondsLeft = 1;
   var userIni = document.createElement('input');
   var submitBtn = document.createElement('button');
   timeEl.innerHTML = "Enter Your Initials";
@@ -128,7 +135,8 @@ function endQuiz() {
   submitBtn.innerText = 'Submit Score';
   questionBox.innerHTML = '';
   questionBox.append(userIni);
-  buttons.append(submitBtn);
+  var nav = document.getElementById('nav');
+  nav.append(submitBtn);
   userIni.setAttribute('id', "userIni");
   submitBtn.addEventListener("click", function(event) {
   if(userIni.value === "") { //keeps user from entering null for scoreboard
@@ -138,23 +146,26 @@ function endQuiz() {
     event.preventDefault();
     var initials = document.getElementById('userIni').value;
     userIni.style.display = "none";
-    localStorage.setItem("userIni", initials + " : " + correct +"/"+ questions.length +" correct")
+    localStorage.setItem("userIni", initials + " : " + correct +"/"+ questions.length +" answers correct")
     prevScore() 
     submitBtn.style.display = "none";
     restartBtn.style.display = "block";
+    buttons.innerHTML = "";
+    nav.innHTML = "";
+    buttons.style.display = "block";
   }
   }); 
-  var restartBtn = document.createElement('button');
   restartBtn.style.display = "none";
   restartBtn.setAttribute('id','center')
   restartBtn.innerText = "Try again?";
-  buttons.append(restartBtn);
+  nav.append(restartBtn);
   restartBtn.addEventListener("click", tryAgain);
 } 
 //function for "try again" button which resets variables needed and allows user to restart the quiz
 function tryAgain() {
+  restartBtn.style.display = "none";
   secondsLeft = 40;
-  questionIndex = 0;
+  // questionIndex = 0;
   answerIndex = 0;
   correct = 0;
   buttons.innerHTML = "";
