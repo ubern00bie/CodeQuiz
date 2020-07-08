@@ -64,7 +64,7 @@ var timeInterval
 function setTime() {
   timerInterval = setInterval(function() {
   timeEl.textContent = secondsLeft + " seconds left.";
-  secondsLeft--;  console.log("1" +(( + secondsLeft === 0 || secondsLeft < 0) && questionIndex > 0))  
+  secondsLeft--;    
   if((secondsLeft === 0 || secondsLeft < 0) && questionIndex > 0) {
     clearInterval(timerInterval);
     timeEl.textContent = "Quiz has ended!"; 
@@ -96,7 +96,6 @@ function showQuestion() {
 }
 //function to generate buttons containing answers from object within array of questions
 function genButton() {
- console.log(questionIndex === questions.length)
   if((questionIndex === questions.length)){
     endQuiz()
 }
@@ -144,10 +143,9 @@ function endQuiz() {
   }
   else {//stores user's initials, hides submit button and reveals try again button
     event.preventDefault();
-    var initials = document.getElementById('userIni').value;
+    initials = document.getElementById('userIni').value;
     userIni.style.display = "none";
-    localStorage.setItem("userIni", initials + " : " + correct +"/"+ questions.length +" answers correct")
-    prevScore() 
+    prevScore(); 
     submitBtn.style.display = "none";
     restartBtn.style.display = "block";
     buttons.innerHTML = "";
@@ -171,11 +169,24 @@ function tryAgain() {
   buttons.innerHTML = "";
   beginQuiz();
 }
-//function that displays the most recent user's entry and score
+var quizScore
+var initials
+var highscores = JSON.parse(localStorage.getItem("highscores")) || [];
+//function that displays 5 highest scores.
 function prevScore() {
   document.getElementById(scoreboard);
-  var userIni = localStorage.getItem("userIni");
-  scoreboard.innerHTML = userIni;
+  var userScore = {
+    initials: initials,
+    quizScore: correct
+  };
+  highscores.push(userScore);
+  highscores.sort((a,b) => b.quizScore-a.quizScore);
+  highscores.splice(5);
+  localStorage.setItem('highscores',JSON.stringify(highscores));
+  scoreboard.innerHTML = "";
+  highscores.forEach(userScore => {
+  scoreboard.innerHTML += userScore.initials + ": " + userScore.quizScore +"/" + questions.length +"<br>";
+  });
 }
 
 
