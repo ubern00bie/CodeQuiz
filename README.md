@@ -26,6 +26,9 @@ When the Quiz runs out of questions, a function is called ending the quiz and cr
 The user's initials and corresponding score are then saved to local storage and displayed. The user can then opt to try the quiz again. 
 
 You can see the deployed application by using the following address: https://ubern00bie.github.io/CodeQuiz/
+![Code Quiz Demo](./assets/CodeQuiz.PNG)
+
+Contact info: jbenningfield.dev@gmail.com
 
 ## License
  
